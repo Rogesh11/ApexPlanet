@@ -1,0 +1,130 @@
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    background: #5b52e7;
+    color: white;
+    padding: 15px 20px;
+}
+
+.nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+}
+
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #c9c9c9;
+}
+
+textarea { height: 90px; }
+
+.btn {
+    background: #5b52e7;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+    font-size: 13px;
+    margin-top: -5px;
+}
+
+
+.task-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.task-input button {
+    padding: 10px 15px;
+    background: #4ade80;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+#taskList {
+    padding: 0;
+    list-style: none;
+}
+
+.task-item {
+    background: #ececff;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.left input {
+    width: 18px;
+    height: 18px;
+}
+
+.buttons button {
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    margin-left: 5px;
+}
+
+.complete { background: #22c55e; }
+.edit { background: #f59e0b; }
+.delete { background: #ef4444; }
+
+.completed-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.status-box {
+    text-align: center;
+    background: #e3e6ff;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+}

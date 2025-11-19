@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 2 – Contact + To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="nav">
+    <h2>Apex Task 2</h2>
+    <ul>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#todo">To-Do</a></li>
+    </ul>
+</nav>
+
+
+<div class="grid">
+
+    <section id="contact" class="card">
+        <h2>Contact Form</h2>
+
+        <form id="contactForm">
+            <label>Name *</label>
+            <input type="text" id="name">
+            <p class="error" id="err-name"></p>
+
+            <label>Email *</label>
+            <input type="email" id="email">
+            <p class="error" id="err-email"></p>
+
+            <label>Message *</label>
+            <textarea id="message"></textarea>
+            <p class="error" id="err-message"></p>
+
+            <button class="btn">Submit</button>
+        </form>
+    </section>
+
+
+    <section id="todo" class="card">
+        <h2>📄 Interactive To-Do List</h2>
+
+        <div class="task-input">
+            <input type="text" id="taskInput" placeholder="Add a new task...">
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <ul id="taskList"></ul>
+
+        <div class="status-box">
+            <p>
+                📊 <span id="total">0</span> total |
+                <span id="completed">0</span> completed |
+                <span id="pending">0</span> pending
+            </p>
+        </div>
+    </section>
+
+</div>
+
+<script src="js.js"></script>
+</body>
+</html>
