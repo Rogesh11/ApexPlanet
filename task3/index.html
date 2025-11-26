@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Web Development - Task 3</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+        .header-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+        }
+        .header-box h1 {
+            color: #4169E1;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        .header-box p {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 10px;
+        }
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .action-btn {
+            background-color: #4169E1;
+            color: white;
+            margin-top: 15px;
+            width: 100%;
+            font-weight: bold;
+        }
+        .action-btn:hover { background-color: #3150b5; }
+        .action-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .option-btn:hover:not([disabled]) {
+            background-color: #f8f9fa;
+            border-color: #4169E1;
+        }
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+        .wrong {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+        #score-display {
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
+            color: #4169E1;
+        }
+        #joke-content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-box">
+        <h1>Advanced Web Development</h1>
+        <p>Task 3 - Interactive Quiz & Joke API</p>
+    </div>
+    <div class="main-container">
+        <div class="card">
+            <div>
+                <h2>JS Knowledge Quiz</h2>
+                <h4 id="question-text" style="font-size: 1.1rem; margin-bottom: 15px;">Loading Question...</h4>
+                <div id="options-container">
+                    </div>
+            </div>
+            <div>
+                <p id="score-display">Score: 0</p>
+                <button id="next-btn" class="action-btn" style="display:none;">Next Question</button>
+            </div>
+        </div>
+        <div class="card">
+            <div>
+                <h2>Daily Joke API</h2>
+                <div id="joke-content">
+                    <p><em>Click the button to load a joke...</em></p>
+                </div>
+            </div>
+            <button id="fetch-joke-btn" class="action-btn">Get New Joke</button>
+        </div>
+    </div>
+<script>
+        var questions = [
+            { q: "What is the correct way to declare a constant in ES6?", options: ["var x = 10", "const x = 10", "let x = 10"], a: 1 },
+            { q: "Which HTML tag is used to link an external JS file?", options: ["<script>", "<link>", "<js>"], a: 0 },
+            { q: "How do you select an element with id 'demo'?", options: ["#demo", ".demo", "demo"], a: 0 },
+            { q: "What does API stand for?", options: ["Apple Pie Interface", "Application Programming Interface", "Automated Protocol Interaction"], a: 1 },
+            { q: "Which symbol implies strict equality (value & type)?", options: ["==", "=", "==="], a: 2 }
+        ];
+        var currentQIndex = 0;
+        var score = 0;
+        var qText = document.getElementById('question-text');
+        var optsContainer = document.getElementById('options-container');
+        var scoreDisplay = document.getElementById('score-display');
+        var nextBtn = document.getElementById('next-btn');
+        function loadQuestion() {
+            var currentQ = questions[currentQIndex];
+            qText.textContent = "Q" + (currentQIndex + 1) + ": " + currentQ.q;
+            optsContainer.innerHTML = "";
+            currentQ.options.forEach(function(opt, index) {
+                var btn = document.createElement('button');
+                btn.textContent = opt;
+                btn.className = 'option-btn';
+                btn.onclick = function() { checkAnswer(index, currentQ.a, btn); };
+                optsContainer.appendChild(btn);
+            });
+            nextBtn.style.display = 'none';
+        }
+        function checkAnswer(selected, correct, btnElement) {
+            var allBtns = optsContainer.children;
+            for (var i = 0; i < allBtns.length; i++) {
+                allBtns[i].disabled = true;
+            }
+            if (selected === correct) {
+                btnElement.classList.add('correct');
+                score++;
+                scoreDisplay.textContent = "Score: " + score;
+            } else {
+                btnElement.classList.add('wrong');
+                optsContainer.children[correct].classList.add('correct');
+            }
+            nextBtn.style.display = 'block';
+        }
+        nextBtn.addEventListener('click', function() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                qText.textContent = "Quiz Completed!";
+                optsContainer.innerHTML = "<h3 style='text-align:center; padding:20px;'>Final Score: " + score + " / " + questions.length + "</h3>";
+                nextBtn.style.display = 'none';
+            }
+        });
+        loadQuestion();
+        var jokeBtn = document.getElementById('fetch-joke-btn');
+        var jokeBox = document.getElementById('joke-content');
+        jokeBtn.addEventListener('click', function() {
+            jokeBox.innerHTML = "<p>Loading...</p>";
+            jokeBtn.disabled = true;
+            fetch('https://official-joke-api.appspot.com/random_joke')
+                .then(function(response) {
+                    if (!response.ok) throw new Error("Network error");
+                    return response.json();
+                })
+                .then(function(data) {
+                    jokeBox.innerHTML =
+                        "<p style='font-size: 1.1em;'><strong>" + data.setup + "</strong></p>" +
+                        "<p style='margin-top:10px; color:#555;'>... " + data.punchline + "</p>";
+                    jokeBtn.disabled = false;
+                })
+                .catch(function(error) {
+                    jokeBox.innerHTML = '<p style="color:red">Failed to load joke. (API might be blocked)</p>';
+                    jokeBtn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
