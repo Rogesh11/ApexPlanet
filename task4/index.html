@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rogesh | Full Project Implementation</title>
+    <style>
+       
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6; 
+            --bg-color: #f1f5f9; 
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        
+        header {
+            background: var(--card-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .brand-name { font-weight: 700; font-size: 1.25rem; color: #0f172a; }
+
+        nav ul { display: flex; list-style: none; gap: 2rem; }
+        nav a { 
+            text-decoration: none; 
+            color: var(--text-muted); 
+            font-weight: 500; 
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        nav a:hover, nav a.active { color: var(--primary); font-weight: 600; }
+
+       
+        main {
+            flex: 1;
+            max-width: 1000px;
+            margin: 2rem auto;
+            width: 90%;
+            padding-bottom: 3rem;
+        }
+
+       
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+        }
+
+        .hero-section h1 { font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.5rem; }
+        .hero-section p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        
+
+        .btn {
+            background: var(--primary-light);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+        .btn:hover { background: var(--primary); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary-light); color: var(--primary-light); }
+        .btn-outline:hover { background: #eff6ff; }
+
+        h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #334155; }
+        
+        .project-list ul { padding-left: 1.5rem; color: var(--text-muted); line-height: 1.8; }
+        .contact-link { color: var(--primary); text-decoration: none; }
+
+       
+        .todo-wrapper { max-width: 600px; margin: 0 auto; }
+        .todo-input-group { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+        .todo-input-group input { 
+            flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none;
+        }
+        .task-list li {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-list li:first-child { border-top-left-radius: 6px; border-top-right-radius: 6px; }
+        .task-list li:last-child { border-bottom: none; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
+        .task-text { cursor: pointer; flex: 1; margin-left: 10px;}
+        .completed { text-decoration: line-through; color: #94a3b8; }
+
+        
+        .controls-bar {
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+            background: white; padding: 1rem; border-radius: 8px; margin-bottom: 20px; box-shadow: var(--shadow);
+        }
+        .controls-bar select { padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
+        .product-card {
+            background: white; padding: 1.5rem; border-radius: 8px; text-align: center;
+            border: 1px solid #e2e8f0; transition: transform 0.2s;
+        }
+        .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+        .price-tag { color: var(--primary); font-weight: bold; font-size: 1.25rem; margin: 0.5rem 0; }
+        .category-badge { 
+            background: #e0f2fe; color: #0284c7; padding: 4px 8px; 
+            border-radius: 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid #e2e8f0; background: white;}
+
+    </style>
+</head>
+<body>
+
+    
+    <header>
+        <div class="brand-name">Rogesh</div>
+        <nav>
+            <ul>
+                <li><a onclick="showView('home')" class="nav-link active">Home</a></li>
+                <li><a onclick="showView('todo')" class="nav-link">To-Do App</a></li>
+                <li><a onclick="showView('products')" class="nav-link">Products</a></li>
+                <li><a onclick="showView('contact')" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        
+        <section id="home" class="view-section active">
+            
+            
+            <div class="card hero-section">
+                <h1>Full Project Implementation — Task 4</h1>
+                <p>Combined Portfolio - To-Do (localStorage) - Product Listing with filter & sort</p>
+                
+            </div>
+
+           
+            <div class="card">
+                <h2>About Me</h2>
+                <p style="color: var(--text-muted); line-height: 1.6;">
+                    Hi, I'm Rogesh. I am a Web Developer focused on clean UI and JavaScript interactivity. This site demonstrates responsive design, localStorage persistence, and dynamic filtering/sorting algorithms within a Single Page Application architecture.
+                </p>
+            </div>
+
+            
+            <div class="card project-list">
+                <h2>Projects Included</h2>
+                <ul>
+                    <li><strong>Portfolio (This page):</strong> A central dashboard to navigate the suite of applications.</li>
+                    <li><strong>To-Do List App:</strong> Features add/delete tasks and data persistence using Browser LocalStorage.</li>
+                    <li><strong>Product Listing Page:</strong> An e-commerce interface with category filtering and price sorting capabilities.</li>
+                </ul>
+            </div>
+
+            
+            <div class="card">
+                <h2>Contact</h2>
+                <p style="color: var(--text-muted);">Email: <a href="mailto:rogesh@example.com" class="contact-link">rogesh@gmail.com</a></p>
+            </div>
+        </section>
+
+
+     
+        <section id="todo" class="view-section">
+            <div class="todo-wrapper">
+                <div class="card">
+                    <h2 style="border-bottom: 2px solid var(--bg-color); padding-bottom:10px; margin-bottom:20px;">Task Manager</h2>
+                    
+                    <div class="todo-input-group">
+                        <input type="text" id="taskInput" placeholder="What needs to be done?">
+                        <button onclick="addTask()" class="btn">Add</button>
+                    </div>
+
+                    <ul id="taskList" class="task-list">
+                     
+                    </ul>
+
+                    <div style="margin-top: 15px; text-align: right;">
+                        <button onclick="clearTasks()" style="color: #ef4444; background:none; border:none; cursor:pointer; font-size:0.9rem;">Clear All Tasks</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    
+        <section id="products" class="view-section">
+            <h2 style="margin-bottom: 1rem;">Tech Store Inventory</h2>
+            
+            <div class="controls-bar">
+                <div>
+                    <label style="font-size: 0.9rem; color: var(--text-muted);">Filter:</label>
+                    <select id="categoryFilter" onchange="renderProducts()">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="wearables">Wearables</option>
+                        <option value="accessories">Accessories</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.9rem; color: var(--text-muted);">Sort By:</label>
+                    <select id="sortOrder" onchange="renderProducts()">
+                        <option value="default">Default</option>
+                        <option value="low">Price: Low to High</option>
+                        <option value="high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="productGrid" class="product-grid">
+               
+            </div>
+        </section>
+
+
+       
+        <section id="contact" class="view-section">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <h2>Get in Touch</h2>
+                <p style="margin-bottom: 20px; color: var(--text-muted);">Fill out the form below to discuss web development opportunities.</p>
+                
+                <form onsubmit="event.preventDefault(); alert('Message Sent!');" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="text" placeholder="Your Name" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    <input type="email" placeholder="Your Email" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    <textarea rows="5" placeholder="Your Message" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px;"></textarea>
+                    <button type="submit" class="btn" style="align-self: flex-start;">Send Message</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Rogesh — Web Development Internship Task</p>
+    </footer>
+
+   
+    <script>
+        
+        function showView(viewId) {
+           
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+           
+            document.getElementById(viewId).classList.add('active');
+
+          
+            const links = document.querySelectorAll('.nav-link');
+            if(viewId === 'home') links[0].classList.add('active');
+            if(viewId === 'todo') links[1].classList.add('active');
+            if(viewId === 'products') links[2].classList.add('active');
+            if(viewId === 'contact') links[3].classList.add('active');
+        }
+
+        
+        const taskInput = document.getElementById('taskInput');
+        const taskList = document.getElementById('taskList');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks();
+            renderProducts();
+        });
+
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+            taskList.innerHTML = '';
+            
+            if(tasks.length === 0) {
+                taskList.innerHTML = '<li style="color:#94a3b8; justify-content:center;">No tasks yet. Add one above!</li>';
+                return;
+            }
+
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                    <span class="task-text ${task.completed ? 'completed' : ''}">${task.text}</span>
+                    <button onclick="deleteTask(${task.id})" style="color:#ef4444; border:none; background:none; cursor:pointer;">&times;</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        function addTask() {
+            const text = taskInput.value.trim();
+            if(!text) return;
+
+            const tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+            tasks.push({ id: Date.now(), text: text, completed: false });
+            localStorage.setItem('myTasks', JSON.stringify(tasks));
+            
+            taskInput.value = '';
+            loadTasks();
+        }
+
+        function toggleTask(id) {
+            const tasks = JSON.parse(localStorage.getItem('myTasks'));
+            const updated = tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t);
+            localStorage.setItem('myTasks', JSON.stringify(updated));
+            loadTasks();
+        }
+
+        function deleteTask(id) {
+            const tasks = JSON.parse(localStorage.getItem('myTasks'));
+            const filtered = tasks.filter(t => t.id !== id);
+            localStorage.setItem('myTasks', JSON.stringify(filtered));
+            loadTasks();
+        }
+
+        function clearTasks() {
+            if(confirm("Are you sure you want to clear all tasks?")) {
+                localStorage.removeItem('myTasks');
+                loadTasks();
+            }
+        }
+
+        
+        const productsDB = [
+            { id: 1, name: "Noise Cancelling Headphones", category: "electronics", price: 2499 },
+            { id: 2, name: "Smart Fitness Watch", category: "wearables", price: 3999 },
+            { id: 3, name: "Laptop Sleeve 13\"", category: "accessories", price: 799 },
+            { id: 4, name: "Mechanical Keyboard", category: "electronics", price: 4500 },
+            { id: 5, name: "USB-C Hub", category: "accessories", price: 1499 },
+            { id: 6, name: "Wireless Earbuds", category: "wearables", price: 1999 }
+        ];
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const catFilter = document.getElementById('categoryFilter').value;
+            const sortOrder = document.getElementById('sortOrder').value;
+
+           
+            let filtered = productsDB.filter(p => {
+                if (catFilter === 'all') return true;
+                return p.category === catFilter;
+            });
+
+           
+            if (sortOrder === 'low') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortOrder === 'high') {
+                filtered.sort((a, b) => b.price - a.price);
+            }
+
+            
+            grid.innerHTML = '';
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#64748b;">No products found.</p>';
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+               
+                card.innerHTML = `
+                    <span class="category-badge">${p.category}</span>
+                    <h3 style="margin: 10px 0; font-size: 1.1rem;">${p.name}</h3>
+                    <div class="price-tag">₹${p.price}</div>
+                    <button class="btn" style="width:100%; margin-top:10px;">Add to Cart</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
