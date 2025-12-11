@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopStyle | Premium Store</title>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --font: system-ui, -apple-system, sans-serif;
+            --header-h: 70px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--light);
+            color: var(--dark);
+            padding-top: var(--header-h);
+        }
+
+        button { cursor: pointer; border: none; font-family: inherit; transition: 0.2s; }
+        img { max-width: 100%; display: block; }
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        input, select { font-family: inherit; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .flex { display: flex; align-items: center; }
+        .between { justify-content: space-between; }
+        .wrap { flex-wrap: wrap; }
+        .grid { display: grid; gap: 2rem; }
+
+        .view-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            background: var(--primary);
+            color: var(--white);
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-block { width: 100%; }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--header-h);
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+            z-index: 1000; box-shadow: var(--shadow); display: flex; align-items: center;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--dark); }
+        .logo span { color: var(--primary); }
+        .nav-links { gap: 2rem; }
+        .nav-links a { font-weight: 500; color: var(--gray); transition: 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+        .cart-icon-wrap { position: relative; font-size: 1.5rem; padding: 0.5rem; }
+        .badge {
+            position: absolute; top: -5px; right: -5px; background: var(--accent); color: var(--dark);
+            font-size: 0.75rem; font-weight: bold; width: 20px; height: 20px; border-radius: 50%;
+            display: grid; place-items: center;
+        }
+
+
+        .hero { background: linear-gradient(to right, #eff6ff, #ffffff); padding: 4rem 0; margin-bottom: 2rem; border-radius: 0 0 var(--radius) var(--radius); }
+        .hero-inner { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 3rem; }
+        .hero h1 { font-size: 3rem; line-height: 1.1; margin-bottom: 1rem; color: var(--dark); }
+
+        .controls {
+            margin-bottom: 2rem;
+            background: var(--white);
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px solid #e2e8f0;
+        }
+        .filter-group { gap: 0.5rem; }
+        .filter-btn {
+            padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 0.9rem;
+        }
+        .filter-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+        .sort-select {
+            padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; background: white;
+        }
+
+        .products-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); padding-bottom: 4rem; }
+
+        .product-card {
+            background: var(--white); border-radius: var(--radius); overflow: hidden;
+            transition: 0.3s; border: 1px solid #f1f5f9; display: flex; flex-direction: column; cursor: pointer;
+        }
+        .product-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+        .p-img-container { height: 200px; overflow: hidden; background: #f8fafc; }
+        .p-img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .product-card:hover img { transform: scale(1.05); }
+        .p-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+        .p-cat { font-size: 0.8rem; color: var(--primary); text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem; }
+        .p-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .p-price { font-size: 1.25rem; color: var(--dark); font-weight: 600; margin-bottom: 1rem; }
+
+        .detail-container { padding: 2rem 0; display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: start; }
+        .detail-img { background: var(--white); border-radius: var(--radius); padding: 2rem; border: 1px solid #e2e8f0; }
+        .detail-info h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .detail-desc { color: var(--gray); line-height: 1.8; margin-bottom: 2rem; }
+
+        .about-header { text-align: center; padding: 3rem 0; }
+        .about-header h1 { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-bottom: 4rem; }
+        .about-text { font-size: 1.1rem; color: var(--gray); line-height: 1.8; }
+        .support-card {
+            background: #eff6ff; padding: 3rem; border-radius: var(--radius); border: 1px solid #dbeafe;
+            text-align: center; max-width: 600px; margin: 0 auto 4rem;
+        }
+
+        .modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            background: var(--white); padding: 2rem; width: 90%; max-width: 500px;
+            border-radius: var(--radius); z-index: 2000;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .modal.active { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 0.7rem; border: 1px solid #cbd5e1; border-radius: 6px; }
+
+        .chat-toggle {
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background: var(--primary); color: white; border-radius: 50%;
+            display: grid; place-items: center; font-size: 1.8rem;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); z-index: 2000;
+        }
+        .chat-box {
+            position: fixed; bottom: 90px; right: 20px; width: 350px; background: white;
+            border-radius: var(--radius); box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+            z-index: 2000; display: none; flex-direction: column; overflow: hidden; border: 1px solid #e2e8f0;
+        }
+        .chat-box.open { display: flex; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .chat-header { background: var(--primary); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { padding: 1rem; height: 250px; overflow-y: auto; background: #f8fafc; }
+        .chat-input-area { padding: 1rem; border-top: 1px solid #e2e8f0; display: flex; gap: 0.5rem; }
+        .chat-input-area input { flex: 1; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; }
+        .msg { padding: 0.5rem 1rem; margin-bottom: 0.5rem; border-radius: 8px; max-width: 80%; font-size: 0.9rem; }
+        .msg.bot { background: #e2e8f0; align-self: flex-start; }
+        .msg.user { background: var(--primary); color: white; align-self: flex-end; }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .overlay.open { opacity: 1; visibility: visible; }
+        .sidebar {
+            position: fixed; top: 0; right: -400px; width: 400px; height: 100%;
+            background: var(--white); z-index: 1002; transition: 0.3s; display: flex; flex-direction: column;
+        }
+        .sidebar.open { right: 0; }
+        .cart-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .cart-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+
+        @media(max-width: 768px) {
+            .hero-inner, .detail-container, .about-grid { grid-template-columns: 1fr; }
+            .hero-inner { text-align: center; }
+            .hero-img { order: -1; }
+            .sidebar { width: 100%; }
+            .controls { flex-direction: column; gap: 1rem; align-items: stretch; }
+            .filter-group { overflow-x: auto; padding-bottom: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" style="position: fixed; top: 90px; right: 20px; background: var(--dark); color: white; padding: 1rem 2rem; border-radius: 30px; opacity: 0; transition: 0.3s; z-index: 3000;">Action Successful</div>
+
+    <header>
+        <div class="container flex between" style="width: 100%;">
+            <a onclick="switchView('home-view')" class="logo">ShopStyle<span>.</span></a>
+            <nav class="nav-links flex">
+                <a onclick="switchView('home-view')" id="nav-home" class="active">Home</a>
+                <a onclick="switchView('about-view')" id="nav-about">About Us</a>
+            </nav>
+            <button class="cart-icon-wrap" onclick="toggleCart()">
+                <i class="ph ph-shopping-cart"></i>
+                <span class="badge" id="cart-count">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+    <div id="home-view" class="view-section active">
+        <section class="container hero">
+            <div class="hero-inner">
+                <div>
+                    <h1>Premium Tech & <br>Lifestyle Gear.</h1>
+                    <p style="color: var(--gray); margin: 1rem 0;">Upgrade your daily carry with our curated selection.</p>
+                    <button onclick="document.getElementById('catalog-start').scrollIntoView()" class="btn">Shop Collection</button>
+                </div>
+                <div class="hero-img">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop" alt="Hero">
+                </div>
+            </div>
+        </section>
+        <section class="container" id="catalog-start">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Explore Catalog</h2>
+
+            <div class="controls flex between wrap">
+                <div class="filter-group flex" id="filter-container">
+                    <button class="filter-btn active" onclick="filterProducts('All', this)">All</button>
+                    <button class="filter-btn" onclick="filterProducts('Electronics', this)">Electronics</button>
+                    <button class="filter-btn" onclick="filterProducts('Fashion', this)">Fashion</button>
+                    <button class="filter-btn" onclick="filterProducts('Home', this)">Home</button>
+                    <button class="filter-btn" onclick="filterProducts('Lifestyle', this)">Lifestyle</button>
+                </div>
+                <div class="sort-group">
+                    <select class="sort-select" onchange="sortProducts(this.value)">
+                        <option value="default">Default Sorting</option>
+                        <option value="low-high">Price: Low to High</option>
+                        <option value="high-low">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid products-grid">
+                </div>
+        </section>
+    </div>
+
+    <div id="detail-view" class="container view-section"></div>
+
+    <div id="about-view" class="container view-section">
+        <div class="about-header">
+            <h1>Our Story</h1>
+            <p style="color: var(--gray);">Redefining the modern shopping experience.</p>
+        </div>
+        <div class="about-grid">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Team">
+            </div>
+            <div class="about-text">
+                <h3 style="margin-bottom: 1rem; font-size: 1.8rem;">We believe in quality.</h3>
+                <p>ShopStyle was born out of a desire to create a curated marketplace where quality meets design. Our team is dedicated to bringing you the best products from around the globe.</p>
+            </div>
+        </div>
+        <div class="support-card">
+            <i class="ph-fill ph-chat-circle-text" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+            <h2>Live Support</h2>
+            <p style="color: var(--gray); margin: 1rem 0 2rem;">Questions? We are here to help you 24/7.</p>
+            <button class="btn" onclick="openChat()">Chat Now</button>
+        </div>
+    </div>
+
+    <div class="modal" id="checkout-modal">
+        <div class="flex between" style="margin-bottom: 1.5rem;">
+            <h2>Secure Checkout</h2>
+            <button onclick="closeAll()"><i class="ph ph-x" style="font-size: 1.2rem;"></i></button>
+        </div>
+        <form id="checkout-form" onsubmit="processCheckout(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" required placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" placeholder="0000 0000 0000 0000" required>
+            </div>
+            <div class="flex" style="gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Expiry</label>
+                    <input type="text" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>CVC</label>
+                    <input type="text" placeholder="123" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-block" style="margin-top: 1rem;">
+                Pay <span id="pay-amount" style="margin-left: 5px;"></span>
+            </button>
+        </form>
+    </div>
+
+    <div class="modal" id="success-modal" style="text-align: center;">
+        <i class="ph-fill ph-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;"></i>
+        <h2 style="margin-bottom: 0.5rem;">Payment Successful!</h2>
+        <p style="color: var(--gray); margin-bottom: 2rem;">Thank you for your purchase. Your order #<span id="order-id"></span> has been placed.</p>
+        <button class="btn" onclick="closeAll(); switchView('home-view')">Continue Shopping</button>
+    </div>
+
+    <button class="chat-toggle" onclick="toggleChat()"><i class="ph-fill ph-chat-circle-dots"></i></button>
+    <div class="chat-box" id="chat-box">
+        <div class="chat-header">
+            <span>Customer Support</span>
+            <button onclick="toggleChat()" style="color: white;"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="msg bot">Hello! Welcome to ShopStyle support.</div>
+        </div>
+        <form class="chat-input-area" onsubmit="sendChat(event)">
+            <input type="text" id="chat-input" placeholder="Type a message..." required>
+            <button type="submit" style="color: var(--primary); font-weight: bold;">Send</button>
+        </form>
+    </div>
+
+    <aside class="sidebar" id="cart-sidebar">
+        <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+            <h3>Your Cart</h3>
+            <button onclick="toggleCart()"><i class="ph ph-x" style="font-size: 1.5rem;"></i></button>
+        </div>
+        <div id="cart-items" style="flex: 1; overflow-y: auto; padding: 1.5rem;"></div>
+        <div style="padding: 1.5rem; background: #f8fafc;">
+            <div class="flex between" style="margin-bottom: 1rem; font-weight: bold;">
+                <span>Total:</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="btn btn-block" onclick="openCheckout()">Checkout</button>
+        </div>
+    </aside>
+
+    <script>
+
+        const allProducts = [
+            { id: 1, name: "Noise Cancelling Headphones", price: 299.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", desc: "Experience pure sound with industry-leading noise cancellation." },
+            { id: 2, name: "Premium Leather Backpack", price: 145.00, cat: "Fashion", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&q=80", desc: "Handcrafted from full-grain leather with padded laptop sleeve." },
+            { id: 3, name: "Mechanical Keyboard", price: 120.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1587829741301-dc798b91a603?w=500&q=80", desc: "Tactile switches for the ultimate typing experience." },
+            { id: 4, name: "Analog Classic Watch", price: 250.00, cat: "Fashion", img: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80", desc: "Timeless design meets modern precision." },
+            { id: 5, name: "Smart Home Speaker", price: 99.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1589492477829-5e65395b66cc?w=500&q=80", desc: "Voice controlled assistant with 360-degree sound." },
+            { id: 6, name: "Polarized Sunglasses", price: 85.00, cat: "Fashion", img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&q=80", desc: "UV protection with a classic wayfarer frame." },
+            { id: 7, name: "4K Action Camera", price: 350.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&q=80", desc: "Capture every moment in stunning ultra HD." },
+            { id: 8, name: "Ceramic Coffee Set", price: 55.00, cat: "Home", img: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=500&q=80", desc: "Hand-poured ceramic for the perfect morning brew." },
+            { id: 9, name: "Minimalist Desk Lamp", price: 45.00, cat: "Home", img: "https://images.unsplash.com/photo-1507473888900-52e1ad145986?w=500&q=80", desc: "Bright LED light with adjustable arm." },
+            { id: 10, name: "Running Sneakers", price: 110.00, cat: "Fashion", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80", desc: "Lightweight mesh design for maximum speed." },
+            { id: 11, name: "Yoga Mat", price: 30.00, cat: "Lifestyle", img: "https://images.unsplash.com/photo-1592432678010-c59121c2f980?w=500&q=80", desc: "Non-slip surface for your daily practice." },
+            { id: 12, name: "Wireless Earbuds", price: 89.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80", desc: "True wireless freedom with charging case." },
+            { id: 13, name: "Cotton Hoodie", price: 60.00, cat: "Fashion", img: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&q=80", desc: "Super soft organic cotton blend." },
+            { id: 14, name: "Insulated Water Bottle", price: 25.00, cat: "Lifestyle", img: "https://images.unsplash.com/photo-1602143407151-011141950038?w=500&q=80", desc: "Keeps drinks cold for 24 hours." },
+            { id: 15, name: "Succulent Plant Pot", price: 18.00, cat: "Home", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&q=80", desc: "Modern ceramic pot for your indoor plants." },
+            { id: 16, name: "Gaming Mouse", price: 70.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&q=80", desc: "Precision sensor with RGB lighting." },
+            { id: 17, name: "Travel Pillow", price: 22.00, cat: "Lifestyle", img: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e6?w=500&q=80", desc: "Memory foam neck support for travel." },
+            { id: 18, name: "Smart Tablet", price: 450.00, cat: "Electronics", img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=500&q=80", desc: "Powerful processor in a slim design." },
+            { id: 19, name: "Denim Jacket", price: 95.00, cat: "Fashion", img: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=500&q=80", desc: "Vintage wash denim for a classic look." },
+            { id: 20, name: "Scented Candle", price: 15.00, cat: "Home", img: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=500&q=80", desc: "Lavender and vanilla soy wax candle." }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('shopCart')) || [];
+        let currentCategory = 'All';
+        let currentSort = 'default';
+
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            if(viewId === 'home-view') document.getElementById('nav-home').classList.add('active');
+            if(viewId === 'about-view') {
+                document.getElementById('nav-about').classList.add('active');
+                setTimeout(() => {
+                    const box = document.getElementById('chat-box');
+                    if(!box.classList.contains('open')) {
+                        box.classList.add('open');
+                        const body = document.getElementById('chat-body');
+                        body.innerHTML += `<div class="msg bot">Hi! I noticed you are checking our story. Need help?</div>`;
+                    }
+                }, 1500);
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function showProductDetail(id) {
+            const p = allProducts.find(prod => prod.id === id);
+            const detailView = document.getElementById('detail-view');
+            detailView.innerHTML = `
+                <button class="btn btn-outline" style="margin-bottom:1rem;" onclick="switchView('home-view')">
+                    <i class="ph-bold ph-arrow-left"></i> Back to Shop
+                </button>
+                <div class="detail-container">
+                    <div class="detail-img"><img src="${p.img}" alt="${p.name}"></div>
+                    <div class="detail-info">
+                        <span class="p-cat">${p.cat}</span>
+                        <h2>${p.name}</h2>
+                        <div class="p-price">$${p.price.toFixed(2)}</div>
+                        <p class="detail-desc">${p.desc}</p>
+                        <div class="flex" style="gap: 1rem;">
+                            <button class="btn" onclick="addToCart(${p.id})">Add to Cart</button>
+                            <button class="btn btn-outline" onclick="openChat()">Question?</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            switchView('detail-view');
+        }
+
+        function filterProducts(category, btn) {
+            currentCategory = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGrid();
+        }
+
+        function sortProducts(sortValue) {
+            currentSort = sortValue;
+            renderGrid();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('product-grid');
+            let displayList = allProducts;
+            if (currentCategory !== 'All') {
+                displayList = allProducts.filter(p => p.cat === currentCategory);
+            }
+            if (currentSort === 'low-high') {
+                displayList = [...displayList].sort((a, b) => a.price - b.price);
+            } else if (currentSort === 'high-low') {
+                displayList = [...displayList].sort((a, b) => b.price - a.price);
+            }
+            grid.innerHTML = displayList.map(p => `
+                <div class="product-card">
+                    <div class="p-img-container" onclick="showProductDetail(${p.id})"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+                    <div class="p-info">
+                        <span class="p-cat">${p.cat}</span>
+                        <h3 class="p-title" onclick="showProductDetail(${p.id})">${p.name}</h3>
+                        <div class="p-price">$${p.price.toFixed(2)}</div>
+                        <button class="btn" style="width:100%; margin-top:auto;" onclick="addToCart(${p.id})">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const product = allProducts.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            if (existing) existing.qty++;
+            else cart.push({ ...product, qty: 1 });
+            updateCartUI();
+            showToast(`Added ${product.name}`);
+            toggleCart();
+        }
+
+        function updateCartUI() {
+            localStorage.setItem('shopCart', JSON.stringify(cart));
+            document.getElementById('cart-count').innerText = cart.reduce((acc, i) => acc + i.qty, 0);
+            const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const totalStr = `$${total.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = totalStr;
+            document.getElementById('pay-amount').innerText = totalStr;
+
+            const cartItems = document.getElementById('cart-items');
+            if(cart.length === 0) cartItems.innerHTML = "<p style='text-align:center; color:gray;'>Cart is empty</p>";
+            else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.img}">
+                        <div><h4>${item.name}</h4><p>${item.qty} x $${item.price}</p></div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('open');
+
+            document.getElementById('checkout-modal').classList.remove('active');
+            document.getElementById('success-modal').classList.remove('active');
+        }
+
+
+        function openCheckout() {
+            if(cart.length === 0) { showToast("Cart is empty!"); return; }
+            document.getElementById('cart-sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('checkout-modal').classList.add('active');
+        }
+
+        function processCheckout(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                cart = [];
+                updateCartUI();
+
+                document.getElementById('checkout-modal').classList.remove('active');
+
+                document.getElementById('order-id').innerText = Math.floor(Math.random() * 100000);
+                document.getElementById('success-modal').classList.add('active');
+
+                e.target.reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }
+
+
+        function openChat() { document.getElementById('chat-box').classList.add('open'); }
+        function toggleChat() { document.getElementById('chat-box').classList.toggle('open'); }
+        function sendChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const body = document.getElementById('chat-body');
+            if(!input.value) return;
+            body.innerHTML += `<div class="msg user">${input.value}</div>`;
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+            setTimeout(() => {
+                body.innerHTML += `<div class="msg bot">Thanks for reaching out! An agent will be with you shortly.</div>`;
+                body.scrollTop = body.scrollHeight;
+            }, 1000);
+        }
+
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.opacity = '1';
+            setTimeout(() => t.style.opacity = '0', 3000);
+        }
+        function closeAll() {
+            document.getElementById('cart-sidebar').classList.remove('open');
+            document.getElementById('checkout-modal').classList.remove('active');
+            document.getElementById('success-modal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('open');
+        }
+
+        renderGrid();
+        updateCartUI();
+    </script>
+</body>
+</html>
